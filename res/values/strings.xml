@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OMG</string>
+    <string-array name="team_names">
+        <item>Красные</item>
+        <item>Зелёные</item>
+        <item>Синие</item>
+        <item>Жёлтые</item>
+        <item>Розовые</item>
+        <item>Бирюзовые</item>
+        <item>Чёрные</item>
+        <item>Белые</item>
+    </string-array>
+    <string-array name="ability_names">
+        <item>Двойной прыжок</item>
+        <item>Реактивные сапоги</item>
+        <item>Невидимость</item>
+        <item>Вампиризм</item>
+        <item>Лечение</item>
+        <item>Радар</item>
+        <item>Телепорт</item>
+        <item>Замедление</item>
+        <item>Клон</item>
+        <item>Мина</item>
+        <item>Крит</item>
+        <item>Блок</item>
+        <item>Возврат</item>
+    </string-array>
+    <string-array name="balltype_names">
+        <item>Обычный</item>
+        <item>Огонь</item>
+        <item>Лёд</item>
+        <item>Яд</item>
+        <item>Электро</item>
+    </string-array>
+</resources>

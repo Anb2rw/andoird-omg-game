@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="team_colors">
+        <item>#00DF0000</item>
+        <item>#0000DF00</item>
+        <item>#000000DF</item>
+        <item>#00DFDF00</item>
+        <item>#00DF00DF</item>
+        <item>#0000DFDF</item>
+        <item>#00000000</item>
+        <item>#00DFDFDF</item>
+    </array>
+</resources>

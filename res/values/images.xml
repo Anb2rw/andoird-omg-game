@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="hats">
+        <item>@drawable/hat1</item>
+        <item>@drawable/hat2</item>
+        <item>@drawable/hat3</item>
+        <item>@drawable/hat4</item>
+        <item>@drawable/hat5</item>
+    </string-array>
+    <string-array name="faces">
+        <item>@drawable/face1</item>
+        <item>@drawable/face2</item>
+        <item>@drawable/face3</item>
+    </string-array>
+    <string-array name="special">
+        <item>@drawable/spec1</item>
+        <item>@drawable/spec2</item>
+        <item>@drawable/spec3</item>
+        <item>@drawable/spec6</item>
+        <item>@drawable/spec4</item>
+        <item>@drawable/spec5</item>
+        <item>@drawable/spec7</item>
+    </string-array>
+</resources>
