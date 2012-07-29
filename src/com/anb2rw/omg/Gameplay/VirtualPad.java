@@ -74,9 +74,11 @@ public class VirtualPad {
                     return;
                 } 
             } else if(event.type == TouchEvent.TOUCH_UP) {
-            	paint.setAlpha(100);
-            	UP=false; DOWN=false; LEFT=false; RIGHT=false;
-            	padFinger=-1;
+            	if(specFinger==event.pointer) {
+            		paint.setAlpha(100);
+            		UP=false; DOWN=false; LEFT=false; RIGHT=false;
+            		padFinger=-1;
+            	}
             }
          }
         if(padFinger!=-1 && !touch.isTouchDown(padFinger)) {

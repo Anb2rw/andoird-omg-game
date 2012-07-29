@@ -21,27 +21,21 @@ import com.anb2rw.omg.Engine.ParticleEmmiter;
  * @author АндрюшкА
  */
 public class Player extends Actor {
-	// private float X,Y;
 	private Random rnd;
 	private int Color = 0x00DF0000;
 	private Paint paint;
 	private Map M;
 	private Level level;
 	private VirtualPad vp;
-//	private int[][] map;
 	private boolean isJump = true, isFire = false;
 	private boolean AirJump = false;
-//	private float dX, dY;
-	private int Tile = 20;
-	// private boolean move=false;//,Pos=true;
+	private int Tile = 25;
 	private Bitmap face;
 	private Matrix Mat;
 	private List<Team> Teams;
 	private int LastHitTeam;
 	private int MaxSpeed, MaxFallSpeed, FallVelocity, JumpSpeed = 120;
-	// private ParticleEmmiter pe;
 	private int Lvl = 100, EXP = 0, MAXEXP = 100, Points = 0;
-//	private int BallSize = 4, BallType = Bullet.TYPE_NORMAL;
 	private int selAA = -1;
 	private int[] Ability={
     	10, //Air Jump//0
@@ -61,7 +55,6 @@ public class Player extends Actor {
         0, //Amaterasu//11
         0  //Far Away//12
     };
-	private boolean Stun = false;
 	private boolean UpOnce = false;
 	private Mine returnMark;
 
@@ -325,7 +318,7 @@ public class Player extends Actor {
 		}
 		
 		if(vp.FIRE) {
-			if (!isFire && CanAttack) {
+			if (!isFire && CanAttack && !Stun) {
 				isFire = true;
 				CanAttack=false;
 				bullet = new Bullet(this, BallSize, BallType, Tile, M);
@@ -334,7 +327,7 @@ public class Player extends Actor {
 		}
 		
 		if(AA!=1) {//���������� �����������
-			if (vp.SPECIAL && selAA!=-1) {
+			if (vp.SPECIAL && selAA!=-1 && !Stun) {
 				if (Settings.ActivableAbility[selAA] == 2) {
 					if (AA != 2)
 						pe.AddEffect(X + Tile / 2, Y + Tile / 2, ParticleEmmiter.EFFECT_EXPLOSION, 20, 0, 0xEFFFFFFF, Tile);
@@ -346,11 +339,9 @@ public class Player extends Actor {
 					if(MP>55-Ability[6]*5)
 				          if(!Pos) {
 				        	  if(X>Tile*2 && M.CanMove(((int)X-Tile*2), (int)(Y)) && M.CanMove(((int)X-Tile*2), ((int)Y+Tile-1)) && M.CanMove(((int)X-Tile-1), ((int)Y)) && M.CanMove(((int)X-Tile-1), ((int)Y+Tile-1)))
-//				              if(X>Tile*2 && map[(int)(Y)/Tile][((int)X-Tile*2)/Tile]==0 && map[((int)Y+Tile-1)/Tile][((int)X-Tile*2)/Tile]==0 && map[((int)Y)/Tile][((int)X-Tile-1)/Tile]==0 && map[((int)Y+Tile-1)/Tile][((int)X-Tile-1)/Tile]==0)
 				                { X-=Tile*2; AA=6; MP-=55-Ability[6]*5; 
 									level.SetZoom(1.2f, 0.4f);}
 				        	  else if(X>Tile && M.CanMove(((int)X-Tile), ((int)Y)) && M.CanMove(((int)X-Tile), ((int)Y+Tile-1)) && M.CanMove(((int)X-1), ((int)Y)) && M.CanMove(((int)X-1), ((int)Y+Tile-1)))
-//				              else if(X>Tile && map[((int)Y)/Tile][((int)X-Tile)/Tile]==0 && map[((int)Y+Tile-1)/Tile][((int)X-Tile)/Tile]==0 && map[((int)Y)/Tile][((int)X-1)/Tile]==0 && map[((int)Y+Tile-1)/Tile][((int)X-1)/Tile]==0)
 				                { X-=Tile; AA=6; MP-=52-Ability[6]*5; 
 									level.SetZoom(1.1f, 0.3f);}
 				              else {
@@ -359,13 +350,10 @@ public class Player extends Actor {
 							  }
 				          }
 				          else {
-				        	  //TODO
 				        	 if(X<Tile*(M.GetMapSize()[0]-3) && M.CanMove(((int)X+Tile*2+1), ((int)Y)) && M.CanMove(((int)X+Tile*2+1), ((int)Y+Tile-1)) && M.CanMove(((int)X+Tile*3-1), ((int)Y)) && M.CanMove(((int)X+Tile*3-1), ((int)Y+Tile-1)))
-//				             if(X<Tile*(M.GetMapSize()[0]-3) && map[((int)Y)/Tile][((int)X+Tile*2+1)/Tile]==0 && map[((int)Y+Tile-1)/Tile][((int)X+Tile*2+1)/Tile]==0 && map[((int)Y)/Tile][((int)X+Tile*3-1)/Tile]==0 && map[((int)Y+Tile-1)/Tile][((int)X+Tile*3-1)/Tile]==0)
 				                { X+=Tile*2; AA=6; MP-=55-Ability[6]*5; 
 									level.SetZoom(1.2f, 0.4f);}
 				        	 else if(X<Tile*(M.GetMapSize()[0]-2) && M.CanMove(((int)X+Tile+1), ((int)Y)) && M.CanMove(((int)X+Tile+1), ((int)Y+Tile-1)) && M.CanMove(((int)X+Tile*2-1), ((int)Y)) && M.CanMove(((int)X+Tile*2-1), ((int)Y+Tile-1)))
-//				             else if(X<Tile*(M.GetMapSize()[0]-2) && map[((int)Y)/Tile][((int)X+Tile+1)/Tile]==0 && map[((int)Y+Tile-1)/Tile][((int)X+Tile+1)/Tile]==0 && map[((int)Y)/Tile][((int)X+Tile*2-1)/Tile]==0 && map[((int)Y+Tile-1)/Tile][((int)X+Tile*2-1)/Tile]==0)
 				                { X+=Tile; AA=6; MP-=52-Ability[6]*5;
 									level.SetZoom(1.1f, 0.3f);}
 				             else {
@@ -443,7 +431,6 @@ public class Player extends Actor {
 		}
 		
 		if(M.GetTile(((int)X)/Tile, ((int)Y+Tile+1)/Tile)==3 || M.GetTile(((int)X+Tile-1)/Tile, ((int)Y+Tile+1)/Tile)==3) {//Fire Block
-//		if(map[((int)Y+Tile+1)/Tile][((int)X)/Tile]==3 || map[((int)Y+Tile+1)/Tile][((int)X+Tile-1)/Tile]==3) {//Fire Block
 			HP-=2*dt;
 			pe.AddEffect(X+2, Y + Tile, ParticleEmmiter.EFFECT_FIRE, 2, 0, 0xFFFF2200, Tile/2);
 			pe.AddEffect(X+Tile-2, Y + Tile, ParticleEmmiter.EFFECT_FIRE, 2, 0, 0xFFFF2200, Tile/2);
@@ -454,7 +441,6 @@ public class Player extends Actor {
 				dX = 0;
 			else {
 				if(M.GetTile(((int)X)/Tile, ((int)Y+Tile+1)/Tile)==2 || M.GetTile(((int)X+Tile-1)/Tile, ((int)Y+Tile+1)/Tile)==2) {
-//				if(map[((int)Y+Tile+1)/Tile][((int)X)/Tile]==2 || map[((int)Y+Tile+1)/Tile][((int)X+Tile-1)/Tile]==2) {
 					dX *= 0.9;// Ice
 					pe.AddEffect(X+2, Y + Tile, ParticleEmmiter.EFFECT_FIRE, 2, 0, 0xDEDDDDFF, Tile/2);
 					pe.AddEffect(X+Tile-2, Y + Tile, ParticleEmmiter.EFFECT_FIRE, 2, 0, 0xDEDDDDFF, Tile/2);
@@ -464,23 +450,16 @@ public class Player extends Actor {
 
 		if (dX > 0) {
 			if(!M.CanMove(((int) X + Tile + (int) (dX * dt*ep)), ((int) Y)) || !M.CanMove(((int) X + Tile + (int) (dX * dt*ep)), ((int) Y + Tile - 1))) {
-//			if (map[((int) Y) / Tile][((int) X + Tile + (int) (dX * dt)) / Tile] != 0
-//					|| map[((int) Y + Tile - 1) / Tile][((int) X + Tile + (int) (dX * dt)) / Tile] != 0) {
-				// X = ((X+Tile+(int)dX)/Tile)*Tile-Tile;
 				X = Round(X + Tile + dX * dt*ep + 1) - Tile;
 				dX = 0;
 			}
 		} else if (dX < 0) {
 			if(!M.CanMove(((int) X + ((int) (dX * dt*ep) - 1)), ((int) Y)) || !M.CanMove(((int) X + ((int) (dX * dt*ep) - 1)), ((int) Y + Tile - 1))) {
-//			if (map[((int) Y) / Tile][((int) X + ((int) (dX * dt) - 1)) / Tile] != 0
-//					|| map[((int) Y + Tile - 1) / Tile][((int) X + ((int) (dX * dt) - 1)) / Tile] != 0) {
 				X = ((X) / Tile) * Tile;
 				dX = 0;
 			}
 		}
 		
-		//if(Debuff==Bullet.TYPE_ICE) MaxSpeed=2*Tile; else MaxSpeed=4*Tile;
-		// float Speed=4*Tile;
 		if (dX < -MaxSpeed)
 			dX = -MaxSpeed;
 		else if (dX > MaxSpeed)
@@ -499,6 +478,15 @@ public class Player extends Actor {
 			MaxSpeed=4*Tile;
 			JumpSpeed = 120;
 		}
+		if(Stun) {
+			if((stunTimer-=dt)<=0) {
+				Stun=false;
+				stunTimer=0;
+				pe.AddEffect(X+Tile/2, Y-Tile/4, ParticleEmmiter.EFFECT_EXPLOSION, 10, 0, 0xFFCCCC00, Tile/2);
+			} else {
+				pe.AddEffect(X+Tile/2, Y-Tile/4, ParticleEmmiter.EFFECT_EXPLOSION, 10, 0, 0xFFCCCC00, Tile/4);
+			}
+		}
 		DetectDamage();
 
 		if (HP <= 0) {
@@ -506,9 +494,9 @@ public class Player extends Actor {
 		}
 		
 		if(!CanAttack) {
-			if((CoolDown+=dt)>=BallSize/4) {
+			if((attackCoolDown+=dt)>=BallSize/4) {
 				CanAttack=true;
-				CoolDown=0;
+				attackCoolDown=0;
 			}
 		}
 
@@ -546,7 +534,7 @@ public class Player extends Actor {
 		Y = Tile;
 		level.SetCamera(0, 0);
 		pe.AddEffect(X + Tile / 2, Y + Tile / 2, ParticleEmmiter.EFFECT_EXPLOSION, 30, 0, 0xFFFFFFFF, Tile);
-		CoolDown=0;
+		attackCoolDown=0;
 		CanAttack=true;
 		Debuff=0;
 		DebuffTimer=0;
@@ -608,11 +596,8 @@ public class Player extends Actor {
 					if (p.Bullet() != null) {
 						if (!p.Bullet().isHit() && p.Bullet().Collide((int) X, (int) Y, Tile, Tile)) {
 							float dmg = Hit(p.Bullet().getPower(),t,p.Number,true);
-//							HP -= p.Bullet().getPower();
-//							pe.AddText("" + p.Bullet().getPower(), X, Y, Color + 0xFF000000, Tile / 2);
-//							LastHit = t;
 							if(dmg>0) {
-								SetDebuff(p.Bullet().getType(),p.Bullet().getPower()/20f);
+								SetDebuff(p.Bullet().getType(),dmg/20f);
 							}
 							p.Bullet().setHit();
 							
@@ -644,9 +629,6 @@ public class Player extends Actor {
 			if(team>=0) LastHitTeam=team;
 		}
 		return damage;
-		
-//        CanRegen=false;
-//        TimeToRegen=0;
     }
 
 	public float GetCameraX(float vX, int w, float dt) {
@@ -818,35 +800,6 @@ public class Player extends Actor {
 		selAA=t;
 		Settings.selAA=selAA;
 		if(t<Assets.special.length) vp.specialIcon=Assets.special[t]; else vp.specialIcon=null;
-		
-//		int t=-1;
-//		int tstart=0;//selstart=selAA;
-//		for (int i = 0; i < Settings.ActivableAbility.length; i++)
-//			if(Settings.ActivableAbility[i]==selAA) {
-//				t=i;
-//				break;
-//			}
-//		if(t>-1) {
-//			tstart=t;
-//		} else t=tstart;
-//			do {
-//				if(!down) {
-//					if (++t >= Settings.ActivableAbility.length)
-//						t = 0;
-//				} else {
-//					if (--t < 0)
-//						t=Settings.ActivableAbility.length-1;
-//				}
-//				if(t==tstart) {
-//					if(Ability[Settings.ActivableAbility[t]]==0) {
-//						selAA=-1; vp.specialIcon=null;
-//					}
-//					return;
-//				}
-//			} while (Ability[Settings.ActivableAbility[t]] == 0);
-//			selAA = Settings.ActivableAbility[t];
-//			Settings.selAA=selAA;
-//			if(t<Assets.special.length) vp.specialIcon=Assets.special[t]; else vp.specialIcon=null;
 	}
 	
 	private void MakeClone() {

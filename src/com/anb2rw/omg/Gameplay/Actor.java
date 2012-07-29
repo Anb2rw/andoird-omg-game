@@ -23,7 +23,8 @@ public abstract class Actor {
     protected int BallSize=4,BallType=Bullet.TYPE_NORMAL;
     protected int AA=-1;
     protected ParticleEmmiter pe;
-    protected float CoolDown=0,DebuffTimer=0;
+    protected float attackCoolDown=0,DebuffTimer=0,stunTimer=0;
+    protected boolean Stun = false;
     protected boolean CanAttack=true;
     protected int Debuff=0;
     protected Enemy Clone;

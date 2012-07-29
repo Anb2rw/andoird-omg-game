@@ -4,11 +4,16 @@
  */
 package com.anb2rw.omg.Gameplay;
 
-import android.graphics.*;
-import com.anb2rw.omg.*;
-import com.anb2rw.omg.Engine.*;
+import java.util.List;
+import java.util.Random;
 
-import java.util.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+
+import com.anb2rw.omg.Assets;
+import com.anb2rw.omg.Engine.ParticleEmmiter;
 
 /**
  *
@@ -23,7 +28,7 @@ public class Enemy extends Actor {
     private Paint paint;
     private Map M;
     private Level level;
-    private int[][] map, ai;
+    private int[][] ai;
     private boolean isJump=true,isFire=false;
     private float dX,dY;
     private int Tile=20;
@@ -41,11 +46,29 @@ public class Enemy extends Actor {
 	private int MaxSpeed,JumpSpeed=120;
 	private float TimeToRegen=0;
 	private boolean CanRegen=false;
+	private int[] ability={
+	    	0, //Air Jump//0
+	        0, //Rocket Boots//1
+	        0, //Invisibility//2
+	        0, //Vampire//3
+	        0, //Heal//4
+	        0, //Radar//5
+	        0, //Dash//6
+	        0, //Shadow Clone//7
+	        0, //Time//8
+	        0, //Miner//9
+	        0, //Crit//10
+	        0, //Block//11
+	        0, //Return//12
+	        0, //Fury//10
+	        0, //Amaterasu//11
+	        0  //Far Away//12
+	    };
 	
 
     public Enemy(Level l, Map m, int Color) {
         //rnd=new Random();
-        this.M=m; map=M.GetMap(); ai=M.GetAI();
+        this.M=m; ai=M.GetAI();
         this.level=l; Tile=level.TileSize();
         rnd=level.rnd;
         this.Color=Color;
@@ -117,8 +140,10 @@ public class Enemy extends Actor {
       if (JumpDelay>JumpRnd)
       {
           if(!isJump || M.GetTile(((int)X+Tile/2)/Tile, ((int)Y+Tile/2)/Tile)==Map.TILE_WATER) {
-              dY = -JumpSpeed;
-              isJump = true;
+        	  if(!Stun) {
+        		  dY = -JumpSpeed;
+        		  isJump = true;
+        	  }
               JumpDelay=0;
               JumpRnd=rnd.nextInt(2)+1;
           }
@@ -131,7 +156,7 @@ public class Enemy extends Actor {
     }
     
     public void Fire(int pX, int pY) {
-     if(CanAttack && !isFire && AttDelay>AttRnd && PlayerNear(pX,pY) && !Panic) {// && !Stun
+     if(CanAttack && !isFire && AttDelay>AttRnd && PlayerNear(pX,pY) && !Panic && !Stun) {
         isFire = true;
         CanAttack=false;
         AttDelay=0;
@@ -186,6 +211,8 @@ public class Enemy extends Actor {
     }
 
     private void Left() {
+    	if(Stun) return;
+    	
         if(dX<=0) {
                 dX-=5;
                 move=true;
@@ -194,6 +221,8 @@ public class Enemy extends Actor {
     }
 
     private void Right() {
+    	if(Stun) return;
+    	
         if(dX>=0) {
               dX+=5;
               move=true;
@@ -327,6 +356,16 @@ public class Enemy extends Actor {
 			MaxSpeed=4*Tile;
 			JumpSpeed = 120;
 		}
+    	if(Stun) {
+			if((stunTimer-=dt)<=0) {
+				Stun=false;
+				stunTimer=0;
+				pe.AddEffect(X+Tile/2, Y-Tile/4, ParticleEmmiter.EFFECT_EXPLOSION, 10, 0, 0xFFCCCC00, Tile/2);
+			} else {
+				pe.AddEffect(X+Tile/2, Y-Tile/4, ParticleEmmiter.EFFECT_EXPLOSION, 10, 0, 0xFFCCCC00, Tile/4);
+			}
+		}
+    	
         if(bullet!=null) if(!bullet.Update(dt)) {
             bullet=null;
             isFire=false;
@@ -354,9 +393,9 @@ public class Enemy extends Actor {
         }
         
         if(!CanAttack) {
-			if((CoolDown+=dt)>=BallSize/4) {
+			if((attackCoolDown+=dt)>=BallSize/4) {
 				CanAttack=true;
-				CoolDown=0;
+				attackCoolDown=0;
 			}
 		}
         
@@ -412,10 +451,13 @@ public class Enemy extends Actor {
         
         BallSize=2+rnd.nextInt(9);
         BallType=rnd.nextInt(Bullet.TYPE_ELECTRIC);
-        CoolDown=0;
+        attackCoolDown=0;
 		CanAttack=true;
 		Debuff=0;
 		DebuffTimer=0;
+		
+		ability[Ability.Stat_crit]=rnd.nextInt(10);
+		ability[Ability.Stat_block]=rnd.nextInt(10);
     }
 
     private int Round(float x) {
@@ -468,12 +510,12 @@ public class Enemy extends Actor {
     
     public float Hit(float damage, int team, int who, boolean show) {
     	//TODO Ability
-    	if(show && rnd.nextInt(100)<level.player.Ability()[11]*3) {//Block
+    	if(show && rnd.nextInt(100)<ability[Ability.Stat_block]*3) {//Block
 			pe.AddText("Block", X+Tile/2-Assets.Font.stringWidth("show", 0.5f)/2, Y, Color + 0xFF000000, Tile / 2);
 			pe.AddEffect(X+Tile/2, Y+Tile/2, ParticleEmmiter.EFFECT_EXPLOSION, 30, 0, 0xFFFFFF00, Tile);
 			return 0;
 		} else {//Hit
-			if(show && rnd.nextInt(100)<level.player.Ability()[10]*3) {//Crit
+			if(show && rnd.nextInt(100)<ability[Ability.Stat_crit]*3) {//Crit
 				damage*=2;
 //				HP-=damage;
 				if(show) {
@@ -522,7 +564,7 @@ public class Enemy extends Actor {
                         	float dmg = Hit(p.Bullet().getPower(),t,p.Number,true);
 							if(dmg>0) {
 								p.MyHit(dmg);
-								SetDebuff(p.Bullet().getType(),p.Bullet().getPower()/20f);
+								SetDebuff(p.Bullet().getType(),dmg/20f);
 							}
                             
                             p.Bullet().setHit();

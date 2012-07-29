@@ -42,37 +42,16 @@ public class InGameMenu {
     }
     
     public void Draw(Canvas canvas) {
-//    	//paint.setColor(0xFFFFFFFF);
-//        if(Page==0) paint.setColor(0xFFFFFFFF); else paint.setColor(0xFFAAAAAA);
-//        Assets.Font.drawString(canvas, "Меню", X/3+200, 30, 1.0f, paint);
-//        int l=Assets.Font.stringWidth("Меню", 1.0f)+290;
-//        
-//        if(Page==1) paint.setColor(0xFFFFFFFF); else paint.setColor(0xFFAAAAAA);
-//        Assets.Font.drawString(canvas, "Способности (+"+level.player.Points()+")", X/3+l, 30, 0.8f, paint);
-//        l+=Assets.Font.stringWidth("Способности (+"+level.player.Points()+")", 0.8f)+50;
-//        
-//        if(Page==2) paint.setColor(0xFFFFFFFF); else paint.setColor(0xFFAAAAAA);
-//        Assets.Font.drawString(canvas, "Шарик", X/3+l, 30, 1.0f, paint);
-//        l+=Assets.Font.stringWidth("Шарик", 1.0f)+120;
         paint.setColor(0xFFFFFFFF);
-        Assets.Font.drawString(canvas, "Меню", X+50, 30, 1.0f, paint);
-        Assets.Font.drawString(canvas, "Способности (+"+level.player.Points()+")", X+480+50, 30, 0.8f, paint);
-        Assets.Font.drawString(canvas, "Шарик", X+2*480+50, 30, 1.0f, paint);
+        Assets.Font.drawString(canvas, "Меню", X/2+50, 30, 1.0f, paint);
+        Assets.Font.drawString(canvas, "Способности (+"+level.player.Points()+")", X/2+240+50, 30, 0.8f, paint);
+        Assets.Font.drawString(canvas, "Шарик", X/2+2*240+50, 30, 1.0f, paint);
         
         paint.setColor(0xFFFFFFFF);
-        //Assets.Font.drawString(canvas, "Меню", X+50, 30, 1.0f, paint);
             Assets.Font.drawString(canvas, "Игра", X+194, Y+70, 0.8f, paint);
             Assets.Font.drawString(canvas, "Меню", X+194, Y+110, 0.8f, paint);
             Assets.Font.drawString(canvas, "Выход", X+182, Y+150, 0.8f, paint);
             
-//            Assets.Font.drawString(canvas, ""+Settings.Speed, X+200, Y+250, 0.8f, paint);
-//            Assets.Font.drawString(canvas, "Скорость", X+40, Y+230, 0.7f, paint);
-//            paint.setColor(0xAA000000);
-//            canvas.drawRect(X+40, Y+250, X+440, Y+270, paint);
-//            paint.setColor(0xEEDF0000);
-//            canvas.drawCircle(X+40+(Settings.Speed-0.5f)*(400f/2.5f), Y+260, 10, paint);
-//        paint.setColor(0xFFFFFFFF);
-        //Assets.Font.drawString(canvas, "Способности", X+530, 30, 0.8f, paint);
             for(int i=0;i<AbNames.length;i++) {
                     //SetAlpha(Y+70+i*70);
                 Assets.Font.drawString(canvas, AbNames[i], X+520, Y+70+i*70, 0.6f, paint);
@@ -111,15 +90,13 @@ public class InGameMenu {
         int x=240-PageCount*14;
         for(int i=0;i<PageCount;i++) {
             if(i==Page) paint.setColor(0xFFFF0000); else paint.setColor(0xFFFFFFFF);
-            Assets.Font.drawString(canvas, ".", x+i*28, canvas.getHeight()-28, 1.0f, paint);
+            Assets.Font.drawString(canvas, ".", x+i*28-10, canvas.getHeight()-28, 1.0f, paint);
         }
         
         if(isExit || isMenu) {
             canvas.drawARGB(200, 0, 0, 0);
-            Assets.Font.drawString(canvas, "Выйти?", 156, 90, 1.0f, paint);
-            //canvas.drawRect(180, 120, 230, 170, paint);
+            Assets.Font.drawString(canvas, isMenu?"Меню?":"Выйти?", 156, 90, 1.0f, paint);
             canvas.drawBitmap(Assets.yes, 180, 120, paint);
-            //canvas.drawRect(250, 120, 300, 170, paint);
             canvas.drawBitmap(Assets.no, 250, 120, paint);
         }
 //        canvas.drawText(""+(Page*480+X), 20, 20, paint);
@@ -137,12 +114,7 @@ public class InGameMenu {
                 if(!isExit && !isMenu) {
                     
                     StartX=event.x; StartY=event.y;
-//                    if(Page==0 && inBorder(event,40,250,400,40)) {
-//                        DragSpeed=true;
-//                        fSX=Settings.Speed;
-//                    } else {
                         SX=X; SY=Y;
-//                    }
                 }
             } else if(event.type == TouchEvent.TOUCH_DRAGGED) {
                 if(!isExit && !isMenu) {
@@ -167,15 +139,9 @@ public class InGameMenu {
                         } else if(DragType==DRAG_VER) {
                             Y=SY+(event.y-StartY);
                         }
-//                    } else {
-//                        Settings.Speed=0.5f+(event.x-40)*(2.5f/400);//(fSX+(event.x-StartX))/80.0f;
-//                        if(Settings.Speed<0.5f) Settings.Speed=0.5f;
-//                        else if(Settings.Speed>3f) Settings.Speed=3f;
-//                    }
                 }
             } else if(event.type == TouchEvent.TOUCH_UP) {
                 if(!isExit && !isMenu) {
-//                    if(!DragSpeed) {
                             if(inBorder(event,0,0,50,50))
                                 return false;
                         //Кнопки
@@ -215,9 +181,6 @@ public class InGameMenu {
 
                         if(Page>PageCount-1) Page=PageCount-1;
                         else if(Page<0) Page=0;
-//                    } else {
-//                        DragSpeed=false;
-//                    }
                 } else {
                         if(inBorder(event, 180, 120, 50, 50)) {
                             if(isExit) level.game().setScreen(new ByeScreen(level.game()));//game.Exit();
@@ -250,8 +213,6 @@ public class InGameMenu {
         		if(X>-Page*480)
         			X=-Page*480;
         	}
-            //X=-Page*480;
-            //Y=0;
         }
         
         return true;

@@ -27,6 +27,8 @@ public class Ability {
 	public static int ShadowClone=7;
 	public static int Time=8;
 	public static int Miner=9;
+	public static int Stat_crit=10;
+	public static int Stat_block=11;
 	
 
 }

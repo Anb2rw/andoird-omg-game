@@ -6,8 +6,6 @@ import android.graphics.Paint;
 public class MovingPlatform extends GameObject {
 	
 	private Level level;
-//	private float X,Y;
-//	private float dX=0,dY=0;
 	private Paint paint;
 	private int Tile=25;
 	private boolean Pos=true;
